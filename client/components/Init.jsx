@@ -3,27 +3,34 @@ import { useContext, useEffect } from "react";
 import { useState } from "react";
 
 function Init() {
-  const [count, setCount] = useState();
-  const discord = useContext(AuthContext);
+  const [count, setCount] = useState(0);
+  const [user, setUser] = useState();
+  const context = useContext(AuthContext);
 
   useEffect(() => {
-    console.log(discord.discordSdk);
-    discord.discordSdk.commands
-      .getChannel({
-        channel_id: discord?.discordSdk.channelId,
-      })
-      .then((channel) => setCount(channel.name));
-  }, [discord?.auth]);
+    context.room.onMessage("count", (message) => {
+      setCount(message.number);
+      setUser(message.user);
+    });
+  }, [context.room]);
+
+  function increaseCount() {
+    context.room.send("count", {
+      number: count,
+      user: context.auth?.user.global_name,
+    });
+  }
 
   return (
     <>
       <div>
-        <p>{String(discord.auth)}</p>
+        <p>Last user to press button: {user}</p>
+        <p>{context.auth?.user.global_name}</p>
         <a href="https://vitejs.dev" target="_blank"></a>
         <a href="https://react.dev" target="_blank"></a>
       </div>
       <div className="card">
-        <button>{count}</button>
+        <button onClick={increaseCount}>{count}</button>
       </div>
     </>
   );

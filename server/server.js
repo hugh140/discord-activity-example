@@ -3,11 +3,10 @@ import dotenv from "dotenv";
 import fetch from "node-fetch";
 import pkg from "colyseus";
 import MyRoom from "./rooms/stateHandlerRoom.js";
+import { createServer } from "http";
+import { WebSocketTransport } from "@colyseus/ws-transport";
 const { Server } = pkg;
 dotenv.config({ path: "../.env" });
-
-const server = new Server();
-server.define("game", MyRoom);
 
 const app = express();
 const port = 3001;
@@ -37,6 +36,11 @@ app.post("/api/token", async (req, res) => {
   res.send({ access_token });
 });
 
-server.listen(port, () => {
-  console.log(`Server listening at http://localhost:${port}`);
+const server = new Server({
+  transport: new WebSocketTransport({
+    server: createServer(app),
+  }),
 });
+server.define("game", MyRoom);
+
+server.listen(port);
