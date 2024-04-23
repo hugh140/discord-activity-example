@@ -8,11 +8,12 @@ function Init() {
   const context = useContext(AuthContext);
 
   useEffect(() => {
-    context.room.onMessage("count", (message) => {
+    context.room?.onMessage("count", (message) => {
       setCount(message.number);
       setUser(message.user);
     });
-  }, [context.room]);
+    setUser(context.auth?.user.global_name)
+  }, [context.room, context.auth]);
 
   function increaseCount() {
     context.room.send("count", {
