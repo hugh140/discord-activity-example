@@ -2,7 +2,7 @@ import { AuthContext } from "../hooks/useDiscord";
 import { useContext, useEffect } from "react";
 import { useState } from "react";
 
-function Init() {
+function Board() {
   const [count, setCount] = useState(0);
   const [user, setUser] = useState();
   const context = useContext(AuthContext);
@@ -25,7 +25,7 @@ function Init() {
   return (
     <>
       <div>
-        <p>Last user to press button: {user}</p>
+        <p className="font-bold">Last user to press button: {user}</p>
         <p>{context.auth?.user.global_name}</p>
         <a href="https://vitejs.dev" target="_blank"></a>
         <a href="https://react.dev" target="_blank"></a>
@@ -36,4 +36,4 @@ function Init() {
     </>
   );
 }
-export default Init;
+export default Board;
