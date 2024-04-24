@@ -1,11 +1,11 @@
 import "./App.css";
 import { AuthContextProvider } from "../hooks/useDiscord";
-import Init from "../components/Init";
+import Board from "../components/Board";
 
 function App() {
   return (
     <AuthContextProvider>
-      <Init />
+      <Board />
     </AuthContextProvider>
   );
 }

@@ -2,7 +2,7 @@ import { AuthContext } from "../hooks/useDiscord";
 import { useContext, useEffect } from "react";
 import { useState } from "react";
 
-function Init() {
+function Board() {
   const [count, setCount] = useState(0);
   const [user, setUser] = useState();
   const context = useContext(AuthContext);
@@ -36,4 +36,4 @@ function Init() {
     </>
   );
 }
-export default Init;
+export default Board;
