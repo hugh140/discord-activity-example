@@ -1,39 +1,41 @@
+import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../hooks/useDiscord";
-import { useContext, useEffect } from "react";
-import { useState } from "react";
 
 function Board() {
-  const [count, setCount] = useState(0);
-  const [user, setUser] = useState();
   const context = useContext(AuthContext);
+  const [matrix, setMatrix] = useState(Array(9).fill(""));
 
   useEffect(() => {
-    context.room?.onMessage("count", (message) => {
-      setCount(message.number);
-      setUser(message.user);
+    context.room?.onMessage("game", (message) => {
+      setMatrix(message.matrix);
     });
-    setUser(context.auth?.user.global_name)
-  }, [context.room, context.auth]);
+  }, [context.room]);
 
-  function increaseCount() {
-    context.room.send("count", {
-      number: count,
-      user: context.auth?.user.global_name,
-    });
+  function setSymbol(box) {
+    const newMatrix = [...matrix];
+    newMatrix[box] = "×";
+    setMatrix(newMatrix);
   }
 
   return (
-    <>
-      <div>
-        <p className="font-bold">Last user to press button: {user}</p>
-        <p>{context.auth?.user.global_name}</p>
-        <a href="https://vitejs.dev" target="_blank"></a>
-        <a href="https://react.dev" target="_blank"></a>
+    <main className="flex justify-center h-[80vh]">
+      <div className="grid grid-cols-3 gap-1 place-content-center">
+        {matrix.map((symbol, index) => (
+          <button
+            key={index}
+            className="w-20 h-20 bg-sky-300 rounded-lg relative"
+            onClick={() => setSymbol(index)}
+          >
+            <div
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+                text-3xl font-extrabold text-sky-800"
+            >
+              {symbol}
+            </div>
+          </button>
+        ))}
       </div>
-      <div className="card">
-        <button onClick={increaseCount}>{count}</button>
-      </div>
-    </>
+    </main>
   );
 }
 export default Board;
