@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 function PlayerTurn({ player }) {
   const context = useContext(AuthContext);
-  const [user, setUser] = useState();
+  const [user, setUser] = useState("");
 
   useEffect(() => {
     if (context.auth?.user.username)
@@ -13,8 +13,7 @@ function PlayerTurn({ player }) {
       });
     if (!player)
       context.room?.onMessage("game", (message) => {
-        setUser(message.oponent.name);
-        console.log("Mi nombre es ", message.oponent.name)
+        setUser(message?.oponent.name);
       });
     else setUser(context.auth?.user.username);
   }, [context.room, context.auth]);

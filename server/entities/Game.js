@@ -8,11 +8,11 @@ class Matrix extends Schema {
     super();
     this.get = new ArraySchema();
     this.turn = Math.random() > 0.5;
-    for (let i = 0; i < 9; i++) this.get.push("");
+    for (let i = 0; i < 9; i++) this.get.push(0);
   }
 }
 schema.defineTypes(Matrix, {
-  get: ["string"],
+  get: ["number"],
   turn: "boolean",
 });
 

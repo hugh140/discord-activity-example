@@ -10,18 +10,15 @@ class MyRoom extends Room {
     this.maxClients = 2;
 
     this.onMessage("updateMatrix", (client, message) => {
-      console.log("hola");
+      this.state.matrix.get = message.matrix;
+      this.state.matrix.turn = !this.state.matrix.turn;
+      this.sendGameInfo();
     });
     this.onMessage("changeName", (client, message) => {
       const changeNameIndex = this.state.players.getAll.findIndex(
         (player) => player.id === client.sessionId
       );
       this.state.players.getAll[changeNameIndex].name = message.name;
-
-      console.log(
-        this.state.players.getAll[0]?.name,
-        this.state.players.getAll[1]?.name
-      );
 
       const testPlayersName = (player) => player.name.trim().length;
       if (this.state.players.getAll.every(testPlayersName)) this.sendGameInfo();
@@ -32,7 +29,7 @@ class MyRoom extends Room {
     console.log(`${client.sessionId} se ha unido a la habitación.`);
 
     const playerState = new Player();
-    if (Boolean(this.state.players.getAll[0]))
+    if (this.state.players.getAll[0] !== undefined)
       playerState.symbol = !this.state.players.getAll[0].symbol;
     else playerState.symbol = Math.random() > 0.5;
 
@@ -40,7 +37,6 @@ class MyRoom extends Room {
     this.state.players.getAll.push(playerState);
 
     if (this.state.players.getAll.length === 2) this.sendGameInfo();
-    console.log(this.clients);
   }
 
   onLeave(client, consented) {
@@ -59,7 +55,14 @@ class MyRoom extends Room {
     this.clients.forEach((client) => {
       client.send("game", {
         matrix: this.state.matrix.get,
-        turn: this.state.matrix.turn,
+        turn:
+          this.state.players.getAll[0].id === client.sessionId
+            ? this.state.matrix.turn
+            : !this.state.matrix.turn,
+        symbol:
+          this.state.players.getAll[0].id === client.sessionId
+            ? this.state.players.getAll[0].symbol ? 1 : 2
+            : this.state.players.getAll[1].symbol ? 1 : 2,
         oponent:
           this.state.players.getAll[0].id === client.sessionId
             ? this.state.players.getAll[1]
