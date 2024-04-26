@@ -8,6 +8,7 @@ function Board() {
   const [matrix, setMatrix] = useState(Array(9).fill(0));
   const [turn, setTurn] = useState(null);
   const [move, setMove] = useState(false);
+  const [gameOver, setGameOver] = useState("");
 
   useEffect(() => {
     context.room?.onMessage("game", (message) => {
@@ -15,6 +16,13 @@ function Board() {
       setTurn(message.turn);
       symbol = message.symbol;
       console.log(symbol);
+    });
+  }, [context.room]);
+
+  useEffect(() => {
+    context.room?.onMessage("victory", (message) => {
+      setTurn(false);
+      setGameOver(message.text);
     });
   }, [context.room]);
 
@@ -44,6 +52,10 @@ function Board() {
     }
   }
 
+  function setReady() {
+    context.room?.send("ready");
+  }
+
   return (
     <main className="flex justify-center h-[80vh]">
       <div className="grid grid-cols-3 gap-1 place-content-center">
@@ -62,7 +74,10 @@ function Board() {
           </button>
         ))}
       </div>
+      <h1>{gameOver}</h1>
+      <br />
       <h1>Turn: {String(turn)}</h1>
+      <button onClick={setReady}>Ready</button>
     </main>
   );
 }

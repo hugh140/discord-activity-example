@@ -21,11 +21,14 @@ class Game extends Schema {
     super();
     this.matrix = new Matrix();
     this.players = new Players();
+    this.ready = false;
   }
 }
 schema.defineTypes(Game, {
   players: Players,
   matrix: Matrix,
+  ready: "boolean",
+  winnerPlayer: "string",
 });
 
 export default Game;

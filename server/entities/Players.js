@@ -7,12 +7,14 @@ class Player extends Schema {
     super();
     this.id = "";
     this.name = "";
+    this.ready = false;
   }
 }
 schema.defineTypes(Player, {
   id: "string",
   name: "string",
   symbol: "boolean",
+  ready: "boolean",
 });
 
 class Players extends Schema {
