@@ -35,7 +35,7 @@ class MyRoom extends Room {
         getPlayer.symbol ? 1 : 2
       );
       if (victory.state === true) {
-        this.broadcast("victory", { text: `${getPlayer.name} is the winner.` });
+        this.broadcast("victory", { text: `${getPlayer.name} wins.` });
         this.state.winnerPlayer = client.sessionId;
         setTimeout(() => this.resetGame(), 3000);
       } else if (victory.state === false) {
@@ -76,7 +76,15 @@ class MyRoom extends Room {
     const deletePlayerIndex = this.state.players.getAll.findIndex(
       (player) => player.id === client.sessionId
     );
-    this.state.players.getAll.splice(deletePlayerIndex);
+    this.state.players.getAll.splice(deletePlayerIndex, 1);
+
+    const alivePlayer = this.state.players.getAll[0];
+    this.sendGameInfo();
+    this.broadcast("victory", { text: `${alivePlayer.name} wins.` });
+    this.state.winnerPlayer = alivePlayer.id;
+    this.state.ready = false;
+    this.state.players.getAll.forEach((player) => (player.ready = false));
+    setTimeout(() => this.resetGame(), 3000);
   }
 
   onDispose() {
@@ -100,16 +108,25 @@ class MyRoom extends Room {
             : this.state.players.getAll[1]?.symbol
             ? 1
             : 2,
-        oponent:
-          this.state.players.getAll[0].id === client.sessionId
-            ? this.state.players.getAll[1]
-            : this.state.players.getAll[0],
       };
 
       if (this.state.winnerPlayer !== undefined) {
         this.state.matrix.turn = client.sessionId === this.state.winnerPlayer;
         this.state.winnerPlayer = undefined;
       }
+
+      let oponent;
+      if (this.clients.length !== 1)
+        oponent = {
+          oponent:
+            this.state.players.getAll[0].id === client.sessionId
+              ? this.state.players.getAll[1]
+              : this.state.players.getAll[0],
+        };
+      else
+        oponent = {
+          oponent: "",
+        };
 
       const turnInfo = {
         turn:
@@ -119,6 +136,7 @@ class MyRoom extends Room {
       };
 
       if (this.state.ready) Object.assign(info, turnInfo);
+      Object.assign(info, oponent);
       client.send("game", info);
     });
   }

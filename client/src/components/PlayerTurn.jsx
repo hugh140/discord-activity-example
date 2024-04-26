@@ -9,13 +9,13 @@ function PlayerTurn({ player }) {
   useEffect(() => {
     if (context.auth?.user.username)
       context.room?.send("changeName", {
-        name: context.auth?.user.username,
+        name: context.auth?.user.global_name,
       });
     if (!player)
       context.room?.onMessage("game", (message) => {
         setUser(message?.oponent.name);
       });
-    else setUser(context.auth?.user.username);
+    else setUser(context.auth?.user.global_name);
   }, [context.room, context.auth]);
 
   return (
