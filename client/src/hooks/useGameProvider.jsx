@@ -10,16 +10,20 @@ function useGame() {
   const context = useContext(AuthContext);
   const [turn, setTurn] = useState(null);
   const [matrix, setMatrix] = useState(Array(9).fill(0));
+  const [avatar, setAvatar] = useState();
+
+  console.log(avatar)
 
   useEffect(() => {
     context.room?.onMessage("game", (message) => {
       setMatrix(message.matrix);
       setTurn(message.turn);
+      setAvatar(message.avatar);
       symbol = message.symbol;
     });
   }, [context.room]);
 
-  return { turn, setTurn, matrix, setMatrix, symbol };
+  return { turn, setTurn, matrix, setMatrix, symbol, avatar };
 }
 
 function GameProvider({ children }) {
@@ -30,7 +34,6 @@ function GameProvider({ children }) {
   useEffect(() => {
     if (context.auth) setLoader(false);
   }, [context.auth]);
-  console.log(context);
 
   return !loader ? (
     <GameContext.Provider value={game}>{children}</GameContext.Provider>

@@ -13,6 +13,7 @@ class Player extends Schema {
 schema.defineTypes(Player, {
   id: "string",
   name: "string",
+  avatar: "string",
   symbol: "boolean",
   ready: "boolean",
 });

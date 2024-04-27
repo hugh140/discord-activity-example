@@ -50,6 +50,7 @@ class MyRoom extends Room {
 
       try {
         this.state.players.getAll[changeNameIndex].name = message.name;
+        this.state.players.getAll[changeNameIndex].avatar = message.avatar;
       } catch (e) {
         console.error(e);
       }
@@ -108,6 +109,10 @@ class MyRoom extends Room {
             : this.state.players.getAll[1]?.symbol
             ? 1
             : 2,
+        avatar:
+          this.state.players.getAll[0].id === client.sessionId
+            ? this.state.players.getAll[1].avatar
+            : this.state.players.getAll[0].avatar,
       };
 
       if (this.state.winnerPlayer !== undefined) {

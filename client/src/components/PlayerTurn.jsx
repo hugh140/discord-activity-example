@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../hooks/useDiscord";
 import PropTypes from "prop-types";
 import { GameContext } from "../hooks/useGameProvider";
+import Avatar from "./Avatar";
 
 function PlayerTurn({ player }) {
   const context = useContext(AuthContext);
@@ -12,6 +13,11 @@ function PlayerTurn({ player }) {
     if (context.auth?.user.username)
       context.room?.send("changeName", {
         name: context.auth?.user.global_name,
+        avatar: context.auth?.user.avatar
+          ? `https://cdn.discordapp.com/avatars/${context.auth.user.id}/${context.auth.user.avatar}.png?size=256`
+          : `https://cdn.discordapp.com/embed/avatars/${
+              Math.abs(Number(user.id) >> 22) % 6
+            }.png`,
       });
     if (!player)
       context.room?.onMessage("game", (message) => {
@@ -35,6 +41,7 @@ function PlayerTurn({ player }) {
         }`}
       >
         {user}
+        <Avatar player={player} />
       </h1>
     </main>
   );
