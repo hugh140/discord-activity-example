@@ -35,11 +35,11 @@ class MyRoom extends Room {
         getPlayer.symbol ? 1 : 2
       );
       if (victory.state === true) {
-        this.broadcast("victory", { text: `${getPlayer.name} wins.` });
+        this.broadcast("victory", { text: `Gana ${getPlayer.name}` });
         this.state.winnerPlayer = client.sessionId;
         setTimeout(() => this.resetGame(), 3000);
       } else if (victory.state === false) {
-        this.broadcast("victory", { text: "Game Over" });
+        this.broadcast("victory", { text: "Empate" });
         setTimeout(() => this.resetGame(), 3000);
       }
     });
@@ -80,7 +80,7 @@ class MyRoom extends Room {
 
     const alivePlayer = this.state.players.getAll[0];
     this.sendGameInfo();
-    this.broadcast("victory", { text: `${alivePlayer.name} wins.` });
+    this.broadcast("victory", { text: `Gana ${alivePlayer.name}` });
     this.state.winnerPlayer = alivePlayer.id;
     this.state.ready = false;
     this.state.players.getAll.forEach((player) => (player.ready = false));

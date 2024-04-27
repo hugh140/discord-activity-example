@@ -1,43 +1,39 @@
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../hooks/useDiscord";
-
-let symbol = 0;
+import { GameContext } from "../hooks/useGameProvider";
+import ReadyPanel from "./ReadyPanel";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faX, faO } from "@fortawesome/free-solid-svg-icons";
+import TurnIndicator from "./TurnIndicator";
+import Winner from "./Winner";
 
 function Board() {
   const context = useContext(AuthContext);
-  const [matrix, setMatrix] = useState(Array(9).fill(0));
-  const [turn, setTurn] = useState(null);
+  const game = useContext(GameContext);
   const [move, setMove] = useState(false);
   const [gameOver, setGameOver] = useState("");
 
   useEffect(() => {
-    context.room?.onMessage("game", (message) => {
-      setMatrix(message.matrix);
-      setTurn(message.turn);
-      symbol = message.symbol;
-      console.log(symbol);
-    });
-  }, [context.room]);
-
-  useEffect(() => {
     context.room?.onMessage("victory", (message) => {
-      setTurn(false);
+      game.setTurn(false);
       setGameOver(message.text);
     });
   }, [context.room]);
 
   useEffect(() => {
     context.room?.send("updateMatrix", {
-      matrix,
+      matrix: game.matrix,
     });
   }, [context.room, move]);
 
   function setSymbol(box) {
-    if (!turn) return;
-    const newMatrix = [...matrix];
-    newMatrix[box] = symbol;
-    setMatrix(newMatrix);
-    setTurn(false);
+    if (!game.turn) return;
+    const newMatrix = [...game.matrix];
+    if (game.matrix[box] !== 0) return;
+
+    newMatrix[box] = game.symbol;
+    game.setMatrix(newMatrix);
+    game.setTurn(false);
     setMove(!move);
   }
 
@@ -46,38 +42,33 @@ function Board() {
       case 0:
         return "";
       case 1:
-        return "o";
+        return <FontAwesomeIcon icon={faO} />;
       case 2:
-        return "x";
+        return <FontAwesomeIcon icon={faX} />;
     }
   }
 
-  function setReady() {
-    context.room?.send("ready");
-  }
-
   return (
-    <main className="flex justify-center h-[80vh]">
+    <main className="flex justify-center h-screen">
       <div className="grid grid-cols-3 gap-1 place-content-center">
-        {matrix.map((symbol, index) => (
+        {game?.matrix.map((symbol, index) => (
           <button
             key={index}
-            className="w-20 h-20 bg-sky-300 rounded-lg relative"
+            className="w-20 h-20 bg-sky-900 rounded-lg relative"
             onClick={() => setSymbol(index)}
           >
             <div
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-                text-3xl font-extrabold text-sky-800"
+                text-3xl font-extrabold text-white"
             >
               {matrixSymbols(symbol)}
             </div>
           </button>
         ))}
       </div>
-      <h1>{gameOver}</h1>
-      <br />
-      <h1>Turn: {String(turn)}</h1>
-      <button onClick={setReady}>Ready</button>
+      <ReadyPanel turn={game.turn} />
+      <TurnIndicator turn={game.turn} />
+      <Winner over={gameOver} set={setGameOver} />
     </main>
   );
 }
