@@ -23,7 +23,7 @@ function ReadyPanel({ turn }) {
         }`}
     >
       <button
-        className={`text-5xl p-5 m-4 rounded-xl  border-4 border-sky-700
+        className={`text-3xl md:text-5xl p-5 m-4 rounded-xl  border-4 border-sky-700
           transition-all active:-translate-y-3
           ${
             ready

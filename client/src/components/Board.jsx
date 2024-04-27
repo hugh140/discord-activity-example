@@ -54,7 +54,7 @@ function Board() {
         {game?.matrix.map((symbol, index) => (
           <button
             key={index}
-            className="w-20 h-20 bg-sky-900 rounded-lg relative"
+            className="w-14 h-14 md:w-20 md:h-20 bg-sky-900 rounded-lg relative"
             onClick={() => setSymbol(index)}
           >
             <div

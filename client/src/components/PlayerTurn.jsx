@@ -28,10 +28,10 @@ function PlayerTurn({ player }) {
       id="turnIndicator"
     >
       <h1
-        className={`text-center duration-500 font-bold ${
+        className={`text-center text-lg md:text-2xl duration-500 font-bold ${
           game.turn !== player
-            ? "text-cyan-600 text-lg"
-            : "text-amber-600 text-2xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
+            ? "text-cyan-600"
+            : "text-amber-600 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
         }`}
       >
         {user}

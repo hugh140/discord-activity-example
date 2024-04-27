@@ -1,6 +1,7 @@
 import { useEffect, createContext, useContext, useState } from "react";
 import { AuthContext } from "./useDiscord";
 import PropTypes from "prop-types";
+import Loader from "../components/Loader";
 
 let symbol = 0;
 const GameContext = createContext();
@@ -22,13 +23,24 @@ function useGame() {
 }
 
 function GameProvider({ children }) {
+  const context = useContext(AuthContext);
+  const [loader, setLoader] = useState(true);
   const game = useGame();
 
-  return <GameContext.Provider value={game}>{children}</GameContext.Provider>;
+  useEffect(() => {
+    if (context.auth) setLoader(false);
+  }, [context.auth]);
+  console.log(context);
+
+  return !loader ? (
+    <GameContext.Provider value={game}>{children}</GameContext.Provider>
+  ) : (
+    <Loader />
+  );
 }
 
 GameProvider.propTypes = {
-  children: PropTypes.array,
+  children: PropTypes.any,
 };
 
 export { GameProvider, GameContext };

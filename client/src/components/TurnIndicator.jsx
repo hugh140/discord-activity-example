@@ -9,7 +9,7 @@ function TurnIndicator({ turn }) {
         <>
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10">
             <FontAwesomeIcon
-              className={`text-[400px] duration-500 text-sky-400/40  ${turn ? "rotate-180" : ""}`}
+              className={`text-[250px] md:text-[400px] duration-500 text-sky-400/40  ${turn ? "rotate-180" : ""}`}
               icon={faArrowUp}
             />
           </div>
